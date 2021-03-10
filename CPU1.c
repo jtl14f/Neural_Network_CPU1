@@ -24,6 +24,7 @@
 //
 // Included Files
 //
+#include <math.h>
 #include "F28x_Project.h"
 
 //
@@ -37,12 +38,23 @@ interrupt void adca1_isr(void);
 //
 // Defines
 //
-#define RESULTS_BUFFER_SIZE 256
+#define RESULTS_BUFFER_SIZE 	100
+#define EX_ADC_RESOLUTION       16
+
+#define EPWM_TIMER_TBPRD  1000U
+#define EPWM_MAX_CMPA     1000U
+#define EPWM_MIN_CMPA        0U
+#define EPWM_MAX_CMPB     1000U
+#define EPWM_MIN_CMPB        0U
+
+#define EPWM_CMP_UP           1U
+#define EPWM_CMP_DOWN         0U
 
 //
 // Globals
 //
-Uint16 AdcaResults[RESULTS_BUFFER_SIZE];
+Uint16 AdcaResults[RESULTS_BUFFER_SIZE];	//Capacitor Voltage Readings
+Uint16 AdcbResults[RESULTS_BUFFER_SIZE];	//Load-Side Current Readings
 Uint16 resultsIndex;
 volatile Uint16 bufferFull;
 
@@ -191,7 +203,7 @@ void ConfigureADC(void)
     //write configurations
     //
     AdcaRegs.ADCCTL2.bit.PRESCALE = 6; //set ADCCLK divider to /4
-    AdcSetMode(ADC_ADCA, ADC_RESOLUTION_12BIT, ADC_SIGNALMODE_SINGLE);
+    AdcSetMode(ADC_ADCA, ADC_RESOLUTION_16BIT, ADC_SIGNALMODE_DIFFERENTIAL);
 
     //
     //Set pulse positions to late
