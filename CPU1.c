@@ -35,7 +35,7 @@ void ConfigureEPWM(void);
 void SetupADCEpwm(Uint16 channelA, Uint16 channelB);
 void update_compare(EPWM_INFO *epwm_info);
 interrupt void adca1_isr(void);
-void InitEPwm1();
+void InitEPwm();
 
 //
 // Defines
@@ -131,6 +131,11 @@ void main(void)
     EALLOW;
     PieVectTable.ADCA1_INT = &adca1_isr; //function for ADCA interrupt 1
     EDIS;
+
+//
+// Initialize EPWM
+//
+    InitEPwm();
 
 //
 // Configure the ADC and power it up
@@ -260,9 +265,6 @@ void ConfigureEPWM(void)
     EPwm1Regs.ETSEL.bit.SOCAEN    = 0;    // Disable SOC on A group
     EPwm1Regs.ETSEL.bit.SOCASEL    = 4;   // Select SOC on up-count
     EPwm1Regs.ETPS.bit.SOCAPRD = 1;       // Generate pulse on 1st event
-    EPwm1Regs.CMPA.bit.CMPA = 0;     // Set compare A value to 0
-    EPwm1Regs.TBPRD = EPWM_TIMER_TBPRD;   // Set period to EPWM_TIMER_TBPRD
-    EPwm1Regs.TBCTL.bit.CTRMODE = 3;      // freeze counter
     EDIS;
 }
 
@@ -324,7 +326,7 @@ interrupt void adca1_isr(void)
     PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
 }
 
-void InitEPwm1()
+void InitEPwm()
 {
     //
     // Setup TBCLK
@@ -333,11 +335,18 @@ void InitEPwm1()
     EPwm1Regs.TBPHS.bit.TBPHS = 0x0000;        // Phase is 0
     EPwm1Regs.TBCTR = 0x0000;                  // Clear counter
 
+    EPwm2Regs.TBPRD = EPWM_TIMER_TBPRD;
+    EPwm2Regs.TBPHS.bit.TBPHS = 0x0000;        // Phase is 0
+    EPwm2Regs.TBCTR = 0x0000;                  // Clear counter
+
     //
     // Set Compare values
     //
     EPwm1Regs.CMPA.bit.CMPA = EPWM_MIN_CMPA;    // Set compare A value
     EPwm1Regs.CMPB.bit.CMPB = EPWM_MIN_CMPB;    // Set Compare B value
+
+    EPwm2Regs.CMPA.bit.CMPA = EPWM_MIN_CMPA;    // Set compare A value
+    EPwm2Regs.CMPB.bit.CMPB = EPWM_MIN_CMPB;    // Set Compare B value
 
     //
     // Setup counter mode
@@ -354,6 +363,11 @@ void InitEPwm1()
     EPwm1Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW;
     EPwm1Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO; // Load on Zero
     EPwm1Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO;
+
+    EPwm2Regs.CMPCTL.bit.SHDWAMODE = CC_SHADOW;
+    EPwm2Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW;
+    EPwm2Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO; // Load on Zero
+    EPwm2Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO;
 
     //
     // Set actions
