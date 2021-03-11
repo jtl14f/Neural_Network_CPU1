@@ -187,12 +187,6 @@ void main(void)
     do
     {
         //
-        //start ePWM
-        //
-        EPwm1Regs.ETSEL.bit.SOCAEN = 1;  //enable SOCA
-        EPwm1Regs.TBCTL.bit.CTRMODE = 0; //unfreeze, and enter up count mode
-
-        //
         //wait while ePWM causes ADC conversions, which then cause interrupts,
         //which fill the results buffer, eventually setting the bufferFull
         //flag
@@ -200,21 +194,6 @@ void main(void)
         while(!bufferFull);
         bufferFull = 0; //clear the buffer full flag
 
-        //
-        //stop ePWM
-        //
-        EPwm1Regs.ETSEL.bit.SOCAEN = 0;  //disable SOCA
-        EPwm1Regs.TBCTL.bit.CTRMODE = 3; //freeze counter
-
-        //
-        //at this point, AdcaResults[] contains a sequence of conversions
-        //from the selected channel
-        //
-
-        //
-        //software breakpoint, hit run again to get updated conversions
-        //
-        asm("   ESTOP0");
     }while(1);
 }
 
