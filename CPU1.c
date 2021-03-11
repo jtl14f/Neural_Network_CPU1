@@ -32,7 +32,7 @@
 //
 void ConfigureADC(void);
 void ConfigureEPWM(void);
-void SetupADCEpwm(Uint16 channel);
+void SetupADCEpwm(Uint16 channelA, Uint16 channelB);
 interrupt void adca1_isr(void);
 
 //
@@ -57,6 +57,10 @@ Uint16 AdcaResults[RESULTS_BUFFER_SIZE];	//Capacitor Voltage Readings
 Uint16 AdcbResults[RESULTS_BUFFER_SIZE];	//Load-Side Current Readings
 Uint16 resultsIndex;
 volatile Uint16 bufferFull;
+
+//PWM Signals
+int16 reference;
+Uint16 theta, delTheta, compareValue, frequency, modIndex;
 
 void main(void)
 {
@@ -122,9 +126,9 @@ void main(void)
     ConfigureEPWM();
 
 //
-// Setup the ADC for ePWM triggered conversions on channel 0
+// Setup the ADC for ePWM triggered conversions on channels 0 and 2
 //
-    SetupADCEpwm(0);
+    SetupADCEpwm(0, 2);
 
 //
 // Enable global Interrupts and higher priority real-time debug events:
@@ -139,6 +143,7 @@ void main(void)
     for(resultsIndex = 0; resultsIndex < RESULTS_BUFFER_SIZE; resultsIndex++)
     {
         AdcaResults[resultsIndex] = 0;
+        AdcbResults[resultsIndex] = 0;
     }
     resultsIndex = 0;
     bufferFull = 0;
@@ -233,8 +238,8 @@ void ConfigureEPWM(void)
     EPwm1Regs.ETSEL.bit.SOCAEN    = 0;    // Disable SOC on A group
     EPwm1Regs.ETSEL.bit.SOCASEL    = 4;   // Select SOC on up-count
     EPwm1Regs.ETPS.bit.SOCAPRD = 1;       // Generate pulse on 1st event
-    EPwm1Regs.CMPA.bit.CMPA = 0x0800;     // Set compare A value to 2048 counts
-    EPwm1Regs.TBPRD = 0x1000;             // Set period to 4096 counts
+    EPwm1Regs.CMPA.bit.CMPA = 0;     // Set compare A value to 0
+    EPwm1Regs.TBPRD = EPWM_TIMER_TBPRD;   // Set period to EPWM_TIMER_TBPRD
     EPwm1Regs.TBCTL.bit.CTRMODE = 3;      // freeze counter
     EDIS;
 }
@@ -242,7 +247,7 @@ void ConfigureEPWM(void)
 //
 // SetupADCEpwm - Setup ADC EPWM acquisition window
 //
-void SetupADCEpwm(Uint16 channel)
+void SetupADCEpwm(Uint16 channelA, Uint16 channelB)
 {
     Uint16 acqps;
 
@@ -262,12 +267,22 @@ void SetupADCEpwm(Uint16 channel)
     //Select the channels to convert and end of conversion flag
     //
     EALLOW;
-    AdcaRegs.ADCSOC0CTL.bit.CHSEL = channel;  //SOC0 will convert pin A0
+
+    //Channel A - Capacitor Voltage
+    AdcaRegs.ADCSOC0CTL.bit.CHSEL = channelA;
     AdcaRegs.ADCSOC0CTL.bit.ACQPS = acqps; //sample window is 100 SYSCLK cycles
     AdcaRegs.ADCSOC0CTL.bit.TRIGSEL = 5; //trigger on ePWM1 SOCA/C
     AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 0; //end of SOC0 will set INT1 flag
     AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1;   //enable INT1 flag
     AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //make sure INT1 flag is cleared
+
+    //Channel B - Load-Side Current
+    AdcbRegs.ADCSOC0CTL.bit.CHSEL = channelB;
+    AdcbRegs.ADCSOC0CTL.bit.ACQPS = acqps; //sample window is 100 SYSCLK cycles
+	AdcbRegs.ADCSOC0CTL.bit.TRIGSEL = 5; //trigger on ePWM1 SOCA/C
+	AdcbRegs.ADCINTSEL1N2.bit.INT1SEL = 0; //end of SOC0 will set INT1 flag
+	AdcbRegs.ADCINTSEL1N2.bit.INT1E = 1;   //enable INT1 flag
+	AdcbRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //make sure INT1 flag is cleared
     EDIS;
 }
 
