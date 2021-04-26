@@ -192,6 +192,9 @@ void main(void)
         //flag
         //
         while(!bufferFull);
+
+        //TODO: Add SPI/DMA Code
+
         bufferFull = 0; //clear the buffer full flag
 
     }while(1);
@@ -316,7 +319,8 @@ interrupt void epwm1_isr(void)
 //
 interrupt void adca1_isr(void)
 {
-    AdcaResults[resultsIndex++] = AdcaResultRegs.ADCRESULT0;
+    AdcaResults[resultsIndex] = AdcaResultRegs.ADCRESULT0;
+    AdcbResults[resultsIndex++] = AdcbResultRegs.ADCRESULT0;
     if(RESULTS_BUFFER_SIZE <= resultsIndex)
     {
         resultsIndex = 0;
@@ -346,8 +350,8 @@ void InitEPwm()
     EPwm1Regs.CMPA.bit.CMPA = EPWM_MIN_CMP;    // Set compare A value
     EPwm1Regs.CMPB.bit.CMPB = 0;    // Set Compare B value
 
-    EPwm2Regs.CMPA.bit.CMPA = EPWM_MIN_CMP;    // Set compare A value
-    EPwm2Regs.CMPB.bit.CMPB = 0;    // Set Compare B value
+    //EPwm2Regs.CMPA.bit.CMPA = EPWM_MIN_CMP;    // Set compare A value
+    //EPwm2Regs.CMPB.bit.CMPB = 0;    // Set Compare B value
 
     //
     // Setup counter mode
@@ -356,6 +360,13 @@ void InitEPwm()
     EPwm1Regs.TBCTL.bit.PHSEN = TB_DISABLE;        // Disable phase loading
     EPwm1Regs.TBCTL.bit.HSPCLKDIV = TB_DIV1;       // Clock ratio to SYSCLKOUT
     EPwm1Regs.TBCTL.bit.CLKDIV = TB_DIV1;
+    EPwm1Regs.TBCTL.bit.SYNCOSEL = TB_SYNC_IN;
+
+    EPwm2Regs.TBCTL.bit.CTRMODE = TB_COUNT_UPDOWN; // Count up and down
+	EPwm2Regs.TBCTL.bit.PHSEN = TB_ENABLE;
+	EPwm2Regs.TBCTL.bit.HSPCLKDIV = TB_DIV1;       // Clock ratio to SYSCLKOUT
+	EPwm2Regs.TBCTL.bit.CLKDIV = TB_DIV1;
+	EPwm2Regs.TBCTL.bit.SYNCOSEL = TB_SYNC_IN;
 
     //
     // Setup shadowing
@@ -365,10 +376,10 @@ void InitEPwm()
     EPwm1Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO; // Load on Zero
     EPwm1Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO;
 
-    EPwm2Regs.CMPCTL.bit.SHDWAMODE = CC_SHADOW;
-    EPwm2Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW;
-    EPwm2Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO; // Load on Zero
-    EPwm2Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO;
+    //EPwm2Regs.CMPCTL.bit.SHDWAMODE = CC_SHADOW;
+    //EPwm2Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW;
+    //EPwm2Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO; // Load on Zero
+    //EPwm2Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO;
 
     //
     // Set actions
