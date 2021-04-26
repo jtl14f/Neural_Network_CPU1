@@ -154,7 +154,7 @@ void main(void)
 //
 // Enable global Interrupts and higher priority real-time debug events:
 //
-    IER |= M_INT1; //Enable group 1 interrupts
+    IER |= (M_INT1 & M_INT3); //Enable group 1 and 3 interrupts
     EINT;  // Enable Global interrupt INTM
     ERTM;  // Enable Global realtime interrupt DBGM
 
@@ -164,7 +164,7 @@ void main(void)
     for(resultsIndex = 0; resultsIndex < RESULTS_BUFFER_SIZE; resultsIndex++)
     {
         AdcaResults[resultsIndex] = 0;
-        AdcbResults[resultsIndex] = 0;
+        AdcbResults[resultsIndex++] = 0;	//TODO: Separate ADC ISRs: Need two separate ISRs.
     }
     resultsIndex = 0;
     bufferFull = 0;
@@ -376,6 +376,7 @@ void InitEPwm()
     EPwm1Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO; // Load on Zero
     EPwm1Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO;
 
+    //Shouldn't be necessary since EPWM2 syncs to EPWM1
     //EPwm2Regs.CMPCTL.bit.SHDWAMODE = CC_SHADOW;
     //EPwm2Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW;
     //EPwm2Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO; // Load on Zero
