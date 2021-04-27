@@ -54,20 +54,6 @@ void InitEPwm();
 // Globals
 //
 
-typedef struct
-{
-    volatile struct EPWM_REGS *EPwmRegHandle;
-    Uint16 EPwm_CMPA_Direction;
-    Uint16 EPwm_CMPB_Direction;
-    Uint16 EPwmTimerIntCount;
-    Uint16 EPwmMaxCMPA;
-    Uint16 EPwmMinCMPA;
-    Uint16 EPwmMaxCMPB;
-    Uint16 EPwmMinCMPB;
-} EPWM_INFO;
-
-EPWM_INFO epwm_info;
-
 Uint16 AdcaResults[RESULTS_BUFFER_SIZE];	//Capacitor Voltage Readings
 Uint16 AdcbResults[RESULTS_BUFFER_SIZE];	//Load-Side Current Readings
 Uint16 resultsIndex;
@@ -295,7 +281,7 @@ void SetupADCEpwm(Uint16 channelA, Uint16 channelB)
 interrupt void epwm1_isr(void)
 {
     //
-    // Update the CMPA and CMPB values
+    // Update the CMPA and CMPB values using SPWM modulation
     //
 	delTheta = ((0xFFFF)*4*3.1415927*frequency*EPWM_TIMER_TBPRD*(0.00000001));
 	theta = theta + delTheta;
@@ -319,6 +305,7 @@ interrupt void epwm1_isr(void)
 //
 interrupt void adca1_isr(void)
 {
+	//Only one interrupt should be necessary- don't need both ADCs to signal when done
     AdcaResults[resultsIndex] = AdcaResultRegs.ADCRESULT0;
     AdcbResults[resultsIndex++] = AdcbResultRegs.ADCRESULT0;
     if(RESULTS_BUFFER_SIZE <= resultsIndex)
@@ -376,11 +363,19 @@ void InitEPwm()
     EPwm1Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO; // Load on Zero
     EPwm1Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO;
 
-    //Shouldn't be necessary since EPWM2 syncs to EPWM1
-    //EPwm2Regs.CMPCTL.bit.SHDWAMODE = CC_SHADOW;
-    //EPwm2Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW;
-    //EPwm2Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO; // Load on Zero
-    //EPwm2Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO;
+    EPwm2Regs.CMPCTL.bit.SHDWAMODE = CC_SHADOW;
+    EPwm2Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW;
+    EPwm2Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO; // Load on Zero
+    EPwm2Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO;
+
+    //Setup Deadband - 300 ns
+    EPwm1Regs.DBCTL.bit.OUT_MODE = DB_FULL_ENABLE;
+    EPwm1Regs.DBCTL.bit.POLSEL = DB_ACTV_HI;
+    EPwm1Regs.DBRED.bit.DBRED = 30;				//Corresponds to 300 ns
+
+    EPwm2Regs.DBCTL.bit.OUT_MODE = DB_FULL_ENABLE;
+    EPwm2Regs.DBCTL.bit.POLSEL = DB_ACTV_HI;
+    EPwm2Regs.DBRED.bit.DBRED = 30;				//Corresponds to 300 ns
 
     //
     // Set actions
@@ -399,23 +394,6 @@ void InitEPwm()
     EPwm1Regs.ETSEL.bit.INTSEL = ET_CTR_ZERO;     // Select INT on Zero event
     EPwm1Regs.ETSEL.bit.INTEN = 1;                // Enable INT
     EPwm1Regs.ETPS.bit.INTPRD = ET_1ST;           // Generate INT on 1st event
-
-    //
-    // Information this example uses to keep track
-    // of the direction the CMPA/CMPB values are
-    // moving, the min and max allowed values and
-    // a pointer to the correct ePWM registers
-    //
-    epwm_info.EPwm_CMPA_Direction = EPWM_CMP_UP;   // Start by increasing CMPA
-    epwm_info.EPwm_CMPB_Direction = EPWM_CMP_DOWN; // & decreasing CMPB
-    epwm_info.EPwmTimerIntCount = 0;               // Zero the interrupt counter
-    epwm_info.EPwmRegHandle = &EPwm1Regs;          // Set the pointer to the
-                                                    // ePWM module
-    epwm_info.EPwmMaxCMPA = EPWM_MAX_CMP;        // Setup min/max CMPA/CMPB
-                                                    // values
-    epwm_info.EPwmMinCMPA = EPWM_MIN_CMP;
-    epwm_info.EPwmMaxCMPB = 0;
-    epwm_info.EPwmMinCMPB = 0;
 }
 
 //
