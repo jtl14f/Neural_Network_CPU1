@@ -164,7 +164,7 @@ void main(void)
     for(resultsIndex = 0; resultsIndex < RESULTS_BUFFER_SIZE; resultsIndex++)
     {
         AdcaResults[resultsIndex] = 0;
-        AdcbResults[resultsIndex++] = 0;	//TODO: Separate ADC ISRs: Need two separate ISRs.
+        AdcbResults[resultsIndex] = 0;
     }
     resultsIndex = 0;
     bufferFull = 0;
