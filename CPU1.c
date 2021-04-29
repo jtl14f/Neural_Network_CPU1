@@ -227,7 +227,6 @@ void SetupADCEpwm(Uint16 channelA, Uint16 channelB)
     //Channel A - Capacitor Voltage
     AdcaRegs.ADCSOC0CTL.bit.CHSEL = channelA;
     AdcaRegs.ADCSOC0CTL.bit.ACQPS = acqps; //sample window is 100 SYSCLK cycles
-    AdcaRegs.ADCSOC0CTL.bit.TRIGSEL = 5; //trigger on ePWM1 SOCA/C
     AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 0; //end of SOC0 will set INT1 flag
     AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1;   //enable INT1 flag
     AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //make sure INT1 flag is cleared
@@ -235,7 +234,6 @@ void SetupADCEpwm(Uint16 channelA, Uint16 channelB)
     //Channel B - Load-Side Current
     AdcbRegs.ADCSOC0CTL.bit.CHSEL = channelB;
     AdcbRegs.ADCSOC0CTL.bit.ACQPS = acqps; //sample window is 100 SYSCLK cycles
-	AdcbRegs.ADCSOC0CTL.bit.TRIGSEL = 5; //trigger on ePWM1 SOCA/C
 	//AdcbRegs.ADCINTSEL1N2.bit.INT1SEL = 0; //end of SOC0 will set INT1 flag
 	//AdcbRegs.ADCINTSEL1N2.bit.INT1E = 1;   //enable INT1 flag
 	//AdcbRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //make sure INT1 flag is cleared
