@@ -1,26 +1,3 @@
-//###########################################################################
-//
-// FILE:   adc_soc_epwm_cpu01.c
-//
-// TITLE:  ADC triggering via epwm for F2837xD.
-//
-//! \addtogroup cpu01_example_list
-//! <h1> ADC ePWM Triggering (adc_soc_epwm)</h1>
-//!
-//! This example sets up the ePWM to periodically trigger the ADC.
-//!
-//! After the program runs, the memory will contain:\n
-//! - \b AdcaResults \b: A sequence of analog-to-digital conversion samples from
-//! pin A0. The time between samples is determined based on the period
-//! of the ePWM timer.
-//
-//###########################################################################
-// $TI Release: F2837xD Support Library v210 $
-// $Release Date: Tue Nov  1 14:46:15 CDT 2016 $
-// $Copyright: Copyright (C) 2013-2016 Texas Instruments Incorporated -
-//             http://www.ti.com/ ALL RIGHTS RESERVED $
-//###########################################################################
-
 //
 // Included Files
 //
@@ -31,7 +8,6 @@
 // Function Prototypes
 //
 void ConfigureADC(void);
-void ConfigureEPWM(void);
 void SetupADCEpwm(Uint16 channelA, Uint16 channelB);
 interrupt void epwm1_isr(void);
 interrupt void adca1_isr(void);
@@ -50,6 +26,8 @@ void InitEPwm();
 #define EPWM_CMP_UP         	   1U
 #define EPWM_CMP_DOWN        	   0U
 
+#define ADC_SAMPLE_CYCLES		  50U
+
 //
 // Globals
 //
@@ -62,6 +40,7 @@ volatile Uint16 bufferFull;
 //PWM Signals
 int16 reference;
 Uint16 theta, delTheta, compareValue, frequency, modIndex;
+Uint16 cycleCount;			//Used to count number of PWM cycles to set sampling frequency
 
 void main(void)
 {
@@ -128,11 +107,6 @@ void main(void)
     ConfigureADC();
 
 //
-// Configure the ePWM
-//
-    ConfigureEPWM();
-
-//
 // Setup the ADC for ePWM triggered conversions on channels 0 and 2
 //
     SetupADCEpwm(0, 2);
@@ -167,9 +141,12 @@ void main(void)
     CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 1;
     EDIS;
 
-//
-//take conversions indefinitely in loop
-//
+    //Global definitions
+    frequency = 60;
+    theta = 0;
+    modIndex = 1;
+    cycleCount = 0;
+
     do
     {
         //
@@ -220,19 +197,6 @@ void ConfigureADC(void)
     //
     DELAY_US(1000);
 
-    EDIS;
-}
-
-//
-// ConfigureEPWM - Configure EPWM SOC and compare values
-//
-void ConfigureEPWM(void)
-{
-    EALLOW;
-    // Assumes ePWM clock is already enabled
-    EPwm1Regs.ETSEL.bit.SOCAEN    = 0;    // Disable SOC on A group
-    EPwm1Regs.ETSEL.bit.SOCASEL    = 4;   // Select SOC on up-count
-    EPwm1Regs.ETPS.bit.SOCAPRD = 1;       // Generate pulse on 1st event
     EDIS;
 }
 
@@ -289,6 +253,15 @@ interrupt void epwm1_isr(void)
 	compareValue = reference + EPWM_TIMER_TBPRD/2;
 	EPwm1Regs.CMPA.bit.CMPA = compareValue;
 
+    if(cycleCount < ADC_SAMPLE_CYCLES)
+    	++cycleCount;
+    else
+    {
+    	cycleCount = 0;
+    	AdcaRegs.ADCSOCFRC1.bit.SOC0 = 1;		//On certain number of PWM Cycles,
+    	AdcbRegs.ADCSOCFRC1.bit.SOC0 = 1;		//trigger SOC via software trigger
+    }
+
     //
     // Clear INT flag for this timer
     //
@@ -308,6 +281,7 @@ interrupt void adca1_isr(void)
 	//Only one interrupt should be necessary- don't need both ADCs to signal when done
     AdcaResults[resultsIndex] = AdcaResultRegs.ADCRESULT0;
     AdcbResults[resultsIndex++] = AdcbResultRegs.ADCRESULT0;
+
     if(RESULTS_BUFFER_SIZE <= resultsIndex)
     {
         resultsIndex = 0;
@@ -380,13 +354,15 @@ void InitEPwm()
     //
     // Set actions
     //
-    EPwm1Regs.AQCTLA.bit.CAU = AQ_CLEAR;            // Clear PWM1A on event A, up
-                                                  // count
-    EPwm1Regs.AQCTLA.bit.CAD = AQ_SET;          //Set PWM1A on event A,
-                                                  // down count
-
+    EPwm1Regs.AQCTLA.bit.CAU = AQ_CLEAR;		// Clear PWM1A on event A, up count
+    EPwm1Regs.AQCTLA.bit.CAD = AQ_SET;          //Set PWM1A on event A, down count
     EPwm1Regs.AQCTLB.bit.CAU = AQ_CLEAR;
     EPwm1Regs.AQCTLB.bit.CAD = AQ_SET;
+
+    EPwm2Regs.AQCTLA.bit.CAU = AQ_SET;		//Set PWM1A on event A, up count
+    EPwm2Regs.AQCTLA.bit.CAD = AQ_CLEAR;	//Clear PWM1A on event A, down count
+    EPwm2Regs.AQCTLB.bit.CAU = AQ_SET;
+    EPwm2Regs.AQCTLB.bit.CAD = AQ_CLEAR;
 
     //
     // Interrupt where we will change the Compare Values
