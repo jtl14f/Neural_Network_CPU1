@@ -12,6 +12,8 @@ void SetupADCEpwm(Uint16 channelA, Uint16 channelB);
 interrupt void epwm1_isr(void);
 interrupt void adca1_isr(void);
 void InitEPwm();
+void InitSpi(void);
+void load_buffer(void);
 
 //
 // Defines
@@ -135,7 +137,7 @@ void main(void)
     PieCtrlRegs.PIEIER1.bit.INTx1 = 1;
 
 //
-// sync ePWM
+// 	Allow EPWM TBCTRs to count
 //
     EALLOW;
     CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 1;
@@ -368,6 +370,45 @@ void InitEPwm()
     EPwm1Regs.ETSEL.bit.INTSEL = ET_CTR_ZERO;     // Select INT on Zero event
     EPwm1Regs.ETSEL.bit.INTEN = 1;                // Enable INT
     EPwm1Regs.ETPS.bit.INTPRD = ET_1ST;           // Generate INT on 1st event
+}
+
+void InitSpi(void)
+{
+   //
+   // Initialize SPI FIFO registers
+   //
+   SpiaRegs.SPICCR.bit.SPISWRESET = 0; // Reset SPI
+   SpiaRegs.SPICCR.all = 0x001F;       //16-bit character, Loopback mode
+   SpiaRegs.SPICTL.all = 0x0017;       //Interrupt enabled, Master/Slave XMIT
+                                       //enabled
+   SpiaRegs.SPISTS.all = 0x0000;
+   SpiaRegs.SPIBRR.bit.SPI_BIT_RATE = 0x0063;   // Baud rate
+   SpiaRegs.SPIFFTX.all = 0xC022;               // Enable FIFO's, set TX FIFO
+                                                // level to 4
+   SpiaRegs.SPIFFRX.all = 0x0022;               // Set RX FIFO level to 4
+   SpiaRegs.SPIFFCT.all = 0x00;
+   SpiaRegs.SPIPRI.all = 0x0000;
+   SpiaRegs.SPICCR.bit.SPISWRESET = 1;          // Enable SPI
+   SpiaRegs.SPIFFTX.bit.TXFIFO = 1;
+   SpiaRegs.SPIFFRX.bit.RXFIFORESET = 1;
+
+   //
+   // A DMA transfer will be triggered here!
+   //
+
+   //
+   // Load the SPI FIFO Tx Buffer
+   //
+   load_buffer();
+
+   //
+   // Disable the clock to prevent continuous transfer / DMA triggers
+   // Note this method of disabling the clock should not be used if
+   // actual data is being transmitted
+   //
+   //EALLOW;
+   //CpuSysRegs.PCLKCR8.bit.SPI_A = 0;
+   //EDIS;
 }
 
 //
