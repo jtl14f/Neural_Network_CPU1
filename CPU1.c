@@ -31,8 +31,8 @@
 // Function Prototypes
 //
 void ConfigureADC(void);
-void ConfigureEPWM(void);
-void SetupADCEpwm(Uint16 channelA, Uint16 channelB);
+//void ConfigureEPWM(void);
+void SetupADC(Uint16 channelA, Uint16 channelB);
 interrupt void epwm1_isr(void);
 interrupt void adca1_isr(void);
 void InitEPwm();
@@ -61,7 +61,7 @@ volatile Uint16 bufferFull;
 
 //PWM Signals
 int16 reference;
-Uint16 theta, delTheta, compareValue, frequency, modIndex;
+Uint16 theta, delTheta, compareValue, modIndex;
 
 void main(void)
 {
@@ -77,7 +77,20 @@ void main(void)
 // This example function is found in the F2837xD_Gpio.c file and
 // illustrates how to set the GPIO to it's default state.
 //
-    InitGpio(); // Skipped for this example
+    //InitGpio(); // Skipped for this example
+
+    //
+    // enable PWM1 and PWM2
+    //
+    CpuSysRegs.PCLKCR2.bit.EPWM1=1;
+    CpuSysRegs.PCLKCR2.bit.EPWM2=1;
+
+    //
+    // For this case just init GPIO pins for ePWM1 and ePWM2
+    // These functions are in the F2837xD_EPwm.c file
+    //
+    InitEPwm1Gpio();
+    InitEPwm2Gpio();
 
 //
 // Step 3. Clear all interrupts and initialize PIE vector table:
@@ -120,7 +133,16 @@ void main(void)
 //
 // Initialize EPWM
 //
+
+    EALLOW;
+    CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 0;
+    EDIS;
+
     InitEPwm();
+
+    EALLOW;
+    CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 1;
+    EDIS;
 
 //
 // Configure the ADC and power it up
@@ -130,19 +152,17 @@ void main(void)
 //
 // Configure the ePWM
 //
-    ConfigureEPWM();
+    //ConfigureEPWM();
 
 //
 // Setup the ADC for ePWM triggered conversions on channels 0 and 2
 //
-    SetupADCEpwm(0, 2);
+    SetupADC(0, 2);
 
 //
 // Enable global Interrupts and higher priority real-time debug events:
 //
     IER |= (M_INT1 & M_INT3); //Enable group 1 and 3 interrupts
-    EINT;  // Enable Global interrupt INTM
-    ERTM;  // Enable Global realtime interrupt DBGM
 
 //
 // Initialize results buffer
@@ -159,13 +179,20 @@ void main(void)
 // enable PIE interrupt
 //
     PieCtrlRegs.PIEIER1.bit.INTx1 = 1;
+    PieCtrlRegs.PIEIER3.bit.INTx1 = 1;
+    //PieCtrlRegs.PIEIER3.bit.INTx2 = 1;
+    //PieCtrlRegs.PIEIER3.bit.INTx3 = 1;
 
 //
 // sync ePWM
 //
-    EALLOW;
+    /*EALLOW;
     CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 1;
-    EDIS;
+    EDIS;*/
+
+    EINT;  // Enable Global interrupt INTM
+    ERTM;  // Enable Global realtime interrupt DBGM
+
 
 //
 //take conversions indefinitely in loop
@@ -239,7 +266,7 @@ void ConfigureEPWM(void)
 //
 // SetupADCEpwm - Setup ADC EPWM acquisition window
 //
-void SetupADCEpwm(Uint16 channelA, Uint16 channelB)
+void SetupADC(Uint16 channelA, Uint16 channelB)
 {
     Uint16 acqps;
 
