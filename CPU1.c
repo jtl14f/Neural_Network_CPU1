@@ -1,26 +1,3 @@
-//###########################################################################
-//
-// FILE:   adc_soc_epwm_cpu01.c
-//
-// TITLE:  ADC triggering via epwm for F2837xD.
-//
-//! \addtogroup cpu01_example_list
-//! <h1> ADC ePWM Triggering (adc_soc_epwm)</h1>
-//!
-//! This example sets up the ePWM to periodically trigger the ADC.
-//!
-//! After the program runs, the memory will contain:\n
-//! - \b AdcaResults \b: A sequence of analog-to-digital conversion samples from
-//! pin A0. The time between samples is determined based on the period
-//! of the ePWM timer.
-//
-//###########################################################################
-// $TI Release: F2837xD Support Library v210 $
-// $Release Date: Tue Nov  1 14:46:15 CDT 2016 $
-// $Copyright: Copyright (C) 2013-2016 Texas Instruments Incorporated -
-//             http://www.ti.com/ ALL RIGHTS RESERVED $
-//###########################################################################
-
 //
 // Included Files
 //
@@ -36,6 +13,8 @@ void SetupADC(Uint16 channelA, Uint16 channelB);
 interrupt void epwm1_isr(void);
 interrupt void adca1_isr(void);
 void InitEPwm();
+void InitSpi(void);
+void load_buffer(void);
 
 //
 // Defines
@@ -50,6 +29,8 @@ void InitEPwm();
 #define EPWM_CMP_UP         	   1U
 #define EPWM_CMP_DOWN        	   0U
 
+#define ADC_SAMPLE_CYCLES		  50U
+
 //
 // Globals
 //
@@ -61,7 +42,8 @@ volatile Uint16 bufferFull;
 
 //PWM Signals
 int16 reference;
-Uint16 theta, delTheta, compareValue, modIndex;
+Uint16 theta, delTheta, compareValue, frequency, modIndex;
+Uint16 cycleCount;			//Used to count number of PWM cycles to set sampling frequency
 
 void main(void)
 {
@@ -184,7 +166,7 @@ void main(void)
     //PieCtrlRegs.PIEIER3.bit.INTx3 = 1;
 
 //
-// sync ePWM
+// 	Allow EPWM TBCTRs to count
 //
     /*EALLOW;
     CpuSysRegs.PCLKCR0.bit.TBCLKSYNC = 1;
@@ -194,9 +176,12 @@ void main(void)
     ERTM;  // Enable Global realtime interrupt DBGM
 
 
-//
-//take conversions indefinitely in loop
-//
+    //Global definitions
+    frequency = 60;
+    theta = 0;
+    modIndex = 1;
+    cycleCount = 0;
+
     do
     {
         //
@@ -251,19 +236,6 @@ void ConfigureADC(void)
 }
 
 //
-// ConfigureEPWM - Configure EPWM SOC and compare values
-//
-void ConfigureEPWM(void)
-{
-    EALLOW;
-    // Assumes ePWM clock is already enabled
-    EPwm1Regs.ETSEL.bit.SOCAEN    = 0;    // Disable SOC on A group
-    EPwm1Regs.ETSEL.bit.SOCASEL    = 4;   // Select SOC on up-count
-    EPwm1Regs.ETPS.bit.SOCAPRD = 1;       // Generate pulse on 1st event
-    EDIS;
-}
-
-//
 // SetupADCEpwm - Setup ADC EPWM acquisition window
 //
 void SetupADC(Uint16 channelA, Uint16 channelB)
@@ -290,7 +262,6 @@ void SetupADC(Uint16 channelA, Uint16 channelB)
     //Channel A - Capacitor Voltage
     AdcaRegs.ADCSOC0CTL.bit.CHSEL = channelA;
     AdcaRegs.ADCSOC0CTL.bit.ACQPS = acqps; //sample window is 100 SYSCLK cycles
-    AdcaRegs.ADCSOC0CTL.bit.TRIGSEL = 5; //trigger on ePWM1 SOCA/C
     AdcaRegs.ADCINTSEL1N2.bit.INT1SEL = 0; //end of SOC0 will set INT1 flag
     AdcaRegs.ADCINTSEL1N2.bit.INT1E = 1;   //enable INT1 flag
     AdcaRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //make sure INT1 flag is cleared
@@ -298,7 +269,6 @@ void SetupADC(Uint16 channelA, Uint16 channelB)
     //Channel B - Load-Side Current
     AdcbRegs.ADCSOC0CTL.bit.CHSEL = channelB;
     AdcbRegs.ADCSOC0CTL.bit.ACQPS = acqps; //sample window is 100 SYSCLK cycles
-	AdcbRegs.ADCSOC0CTL.bit.TRIGSEL = 5; //trigger on ePWM1 SOCA/C
 	//AdcbRegs.ADCINTSEL1N2.bit.INT1SEL = 0; //end of SOC0 will set INT1 flag
 	//AdcbRegs.ADCINTSEL1N2.bit.INT1E = 1;   //enable INT1 flag
 	//AdcbRegs.ADCINTFLGCLR.bit.ADCINT1 = 1; //make sure INT1 flag is cleared
@@ -315,6 +285,15 @@ interrupt void epwm1_isr(void)
 	reference = (int16)modIndex * cos((float)theta/65535);
 	compareValue = reference + EPWM_TIMER_TBPRD/2;
 	EPwm1Regs.CMPA.bit.CMPA = compareValue;
+
+    if(cycleCount < ADC_SAMPLE_CYCLES)
+    	++cycleCount;
+    else
+    {
+    	cycleCount = 0;
+    	AdcaRegs.ADCSOCFRC1.bit.SOC0 = 1;		//On certain number of PWM Cycles,
+    	AdcbRegs.ADCSOCFRC1.bit.SOC0 = 1;		//trigger SOC via software trigger
+    }
 
     //
     // Clear INT flag for this timer
@@ -335,6 +314,7 @@ interrupt void adca1_isr(void)
 	//Only one interrupt should be necessary- don't need both ADCs to signal when done
     AdcaResults[resultsIndex] = AdcaResultRegs.ADCRESULT0;
     AdcbResults[resultsIndex++] = AdcbResultRegs.ADCRESULT0;
+
     if(RESULTS_BUFFER_SIZE <= resultsIndex)
     {
         resultsIndex = 0;
@@ -407,13 +387,15 @@ void InitEPwm()
     //
     // Set actions
     //
-    EPwm1Regs.AQCTLA.bit.CAU = AQ_CLEAR;            // Clear PWM1A on event A, up
-                                                  // count
-    EPwm1Regs.AQCTLA.bit.CAD = AQ_SET;          //Set PWM1A on event A,
-                                                  // down count
-
+    EPwm1Regs.AQCTLA.bit.CAU = AQ_CLEAR;		// Clear PWM1A on event A, up count
+    EPwm1Regs.AQCTLA.bit.CAD = AQ_SET;          //Set PWM1A on event A, down count
     EPwm1Regs.AQCTLB.bit.CAU = AQ_CLEAR;
     EPwm1Regs.AQCTLB.bit.CAD = AQ_SET;
+
+    EPwm2Regs.AQCTLA.bit.CAU = AQ_SET;		//Set PWM1A on event A, up count
+    EPwm2Regs.AQCTLA.bit.CAD = AQ_CLEAR;	//Clear PWM1A on event A, down count
+    EPwm2Regs.AQCTLB.bit.CAU = AQ_SET;
+    EPwm2Regs.AQCTLB.bit.CAD = AQ_CLEAR;
 
     //
     // Interrupt where we will change the Compare Values
@@ -421,6 +403,45 @@ void InitEPwm()
     EPwm1Regs.ETSEL.bit.INTSEL = ET_CTR_ZERO;     // Select INT on Zero event
     EPwm1Regs.ETSEL.bit.INTEN = 1;                // Enable INT
     EPwm1Regs.ETPS.bit.INTPRD = ET_1ST;           // Generate INT on 1st event
+}
+
+void InitSpi(void)
+{
+   //
+   // Initialize SPI FIFO registers
+   //
+   SpiaRegs.SPICCR.bit.SPISWRESET = 0; // Reset SPI
+   SpiaRegs.SPICCR.all = 0x001F;       //16-bit character, Loopback mode
+   SpiaRegs.SPICTL.all = 0x0017;       //Interrupt enabled, Master/Slave XMIT
+                                       //enabled
+   SpiaRegs.SPISTS.all = 0x0000;
+   SpiaRegs.SPIBRR.bit.SPI_BIT_RATE = 0x0063;   // Baud rate
+   SpiaRegs.SPIFFTX.all = 0xC022;               // Enable FIFO's, set TX FIFO
+                                                // level to 4
+   SpiaRegs.SPIFFRX.all = 0x0022;               // Set RX FIFO level to 4
+   SpiaRegs.SPIFFCT.all = 0x00;
+   SpiaRegs.SPIPRI.all = 0x0000;
+   SpiaRegs.SPICCR.bit.SPISWRESET = 1;          // Enable SPI
+   SpiaRegs.SPIFFTX.bit.TXFIFO = 1;
+   SpiaRegs.SPIFFRX.bit.RXFIFORESET = 1;
+
+   //
+   // A DMA transfer will be triggered here!
+   //
+
+   //
+   // Load the SPI FIFO Tx Buffer
+   //
+   load_buffer();
+
+   //
+   // Disable the clock to prevent continuous transfer / DMA triggers
+   // Note this method of disabling the clock should not be used if
+   // actual data is being transmitted
+   //
+   //EALLOW;
+   //CpuSysRegs.PCLKCR8.bit.SPI_A = 0;
+   //EDIS;
 }
 
 //
