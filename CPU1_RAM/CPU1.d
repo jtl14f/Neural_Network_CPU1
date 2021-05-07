@@ -1,19 +1,16 @@
 # FIXED
 
 CPU1.obj: ../CPU1.c
-CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/math.h
-CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/_ti_config.h
-CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/linkage.h
-CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/_defs.h
-CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/sys/_types.h
-CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/sys/cdefs.h
-CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/machine/_types.h
-CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/machine/_limits.h
 CPU1.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/F28x_Project.h
 CPU1.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/F2837xD_Cla_typedefs.h
 CPU1.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_device.h
 CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/assert.h
+CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/_ti_config.h
+CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/linkage.h
 CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/stdarg.h
+CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/sys/_types.h
+CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/sys/cdefs.h
+CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/machine/_types.h
 CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/stdbool.h
 CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/stddef.h
 CPU1.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/stdint.h
@@ -68,21 +65,19 @@ CPU1.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/
 CPU1.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/F2837xD_SysCtrl_defines.h
 CPU1.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/F2837xD_Upp_defines.h
 CPU1.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/F2837xD_defaultisr.h
+CPU1.obj: ../SineTable.h
 
 ../CPU1.c: 
-C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/math.h: 
-C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/_ti_config.h: 
-C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/linkage.h: 
-C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/_defs.h: 
-C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/sys/_types.h: 
-C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/sys/cdefs.h: 
-C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/machine/_types.h: 
-C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/machine/_limits.h: 
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/F28x_Project.h: 
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/F2837xD_Cla_typedefs.h: 
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_device.h: 
 C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/assert.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/_ti_config.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/linkage.h: 
 C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/stdarg.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/sys/_types.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/sys/cdefs.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/machine/_types.h: 
 C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/stdbool.h: 
 C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/stddef.h: 
 C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/stdint.h: 
@@ -137,3 +132,4 @@ C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/F2837xD_Dm
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/F2837xD_SysCtrl_defines.h: 
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/F2837xD_Upp_defines.h: 
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/F2837xD_defaultisr.h: 
+../SineTable.h: 

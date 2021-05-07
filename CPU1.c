@@ -1,8 +1,8 @@
 //
 // Included Files
 //
-#include <math.h>
 #include "F28x_Project.h"
+#include "SineTable.h"
 
 //
 // Function Prototypes
@@ -10,11 +10,11 @@
 void ConfigureADC(void);
 //void ConfigureEPWM(void);
 void SetupADC(Uint16 channelA, Uint16 channelB);
-interrupt void epwm1_isr(void);
-interrupt void adca1_isr(void);
+__interrupt void epwm1_isr(void);
+__interrupt void adca1_isr(void);
 void InitEPwm();
 void InitSpi(void);
-void load_buffer(void);
+//void load_buffer(void);
 
 //
 // Defines
@@ -23,17 +23,32 @@ void load_buffer(void);
 #define EX_ADC_RESOLUTION         16U
 
 #define EPWM_TIMER_TBPRD  		1000U
-#define EPWM_MAX_CMP      		 950U
-#define EPWM_MIN_CMP       		  50U
+//#define EPWM_MAX_CMP      		 950U
+//#define EPWM_MIN_CMP       		  50U
 
-#define EPWM_CMP_UP         	   1U
-#define EPWM_CMP_DOWN        	   0U
+//#define EPWM_CMP_UP         	   1U
+//#define EPWM_CMP_DOWN        	   0U
 
+#define EPWM_CYCLES				 833U
 #define ADC_SAMPLE_CYCLES		  50U
 
 //
 // Globals
 //
+
+typedef struct
+{
+    volatile struct EPWM_REGS *EPwmRegHandle;
+    Uint16 EPwm_CMPA_Direction;
+    Uint16 EPwm_CMPB_Direction;
+    Uint16 EPwmTimerIntCount;
+    Uint16 EPwmMaxCMPA;
+    Uint16 EPwmMinCMPA;
+    Uint16 EPwmMaxCMPB;
+    Uint16 EPwmMinCMPB;
+}EPWM_INFO;
+
+EPWM_INFO epwm_info;
 
 Uint16 AdcaResults[RESULTS_BUFFER_SIZE];	//Capacitor Voltage Readings
 Uint16 AdcbResults[RESULTS_BUFFER_SIZE];	//Load-Side Current Readings
@@ -41,9 +56,11 @@ Uint16 resultsIndex;
 volatile Uint16 bufferFull;
 
 //PWM Signals
-int16 reference;
-Uint16 theta, delTheta, compareValue, frequency, modIndex;
-Uint16 cycleCount;			//Used to count number of PWM cycles to set sampling frequency
+float theta, modIndex;
+Uint16 EPWM_cycle_count;	//Used to index through sine table
+Uint16 ADC_cycle_count;		//Used to count number of PWM cycles to set sampling frequency
+
+//void update_compare(EPWM_INFO *epwm_info);
 
 void main(void)
 {
@@ -177,10 +194,8 @@ void main(void)
 
 
     //Global definitions
-    frequency = 60;
-    theta = 0;
+    theta = Sin_tab[0];
     modIndex = 1;
-    cycleCount = 0;
 
     do
     {
@@ -192,7 +207,6 @@ void main(void)
         while(!bufferFull);
 
         //TODO: Add SPI/DMA Code
-
         bufferFull = 0; //clear the buffer full flag
 
     }while(1);
@@ -275,22 +289,20 @@ void SetupADC(Uint16 channelA, Uint16 channelB)
     EDIS;
 }
 
-interrupt void epwm1_isr(void)
+__interrupt void epwm1_isr(void)
 {
     //
     // Update the CMPA and CMPB values using SPWM modulation
     //
-	delTheta = ((0xFFFF)*4*3.1415927*frequency*EPWM_TIMER_TBPRD*(0.00000001));
-	theta = theta + delTheta;
-	reference = (int16)modIndex * cos((float)theta/65535);
-	compareValue = reference + EPWM_TIMER_TBPRD/2;
-	EPwm1Regs.CMPA.bit.CMPA = compareValue;
+	//update_compare(&epwm_info);
 
-    if(cycleCount < ADC_SAMPLE_CYCLES)
-    	++cycleCount;
+
+
+    if(ADC_cycle_count < ADC_SAMPLE_CYCLES)
+    	++ADC_cycle_count;
     else
     {
-    	cycleCount = 0;
+    	ADC_cycle_count = 0;
     	AdcaRegs.ADCSOCFRC1.bit.SOC0 = 1;		//On certain number of PWM Cycles,
     	AdcbRegs.ADCSOCFRC1.bit.SOC0 = 1;		//trigger SOC via software trigger
     }
@@ -309,7 +321,7 @@ interrupt void epwm1_isr(void)
 //
 // adca1_isr - Read ADC Buffer in ISR
 //
-interrupt void adca1_isr(void)
+__interrupt void adca1_isr(void)
 {
 	//Only one interrupt should be necessary- don't need both ADCs to signal when done
     AdcaResults[resultsIndex] = AdcaResultRegs.ADCRESULT0;
@@ -341,11 +353,11 @@ void InitEPwm()
     //
     // Set Compare values
     //
-    EPwm1Regs.CMPA.bit.CMPA = EPWM_MIN_CMP;    // Set compare A value
+    EPwm1Regs.CMPA.bit.CMPA = 500;//EPWM_MIN_CMP;    // Set compare A value
     EPwm1Regs.CMPB.bit.CMPB = 0;    // Set Compare B value
 
-    //EPwm2Regs.CMPA.bit.CMPA = EPWM_MIN_CMP;    // Set compare A value
-    //EPwm2Regs.CMPB.bit.CMPB = 0;    // Set Compare B value
+    EPwm2Regs.CMPA.bit.CMPA = 500;    // Set compare A value
+    EPwm2Regs.CMPB.bit.CMPB = 0;    // Set Compare B value
 
     //
     // Setup counter mode
@@ -397,12 +409,33 @@ void InitEPwm()
     EPwm2Regs.AQCTLB.bit.CAU = AQ_SET;
     EPwm2Regs.AQCTLB.bit.CAD = AQ_CLEAR;
 
+    EPwm1Regs.AQCTLA.bit.CAU = AQ_SET;
+    EPwm1Regs.AQCTLA.bit.CAD = AQ_CLEAR;
+    EPwm1Regs.AQCTLB.bit.CAU = AQ_SET;
+    EPwm1Regs.AQCTLB.bit.CAD = AQ_CLEAR;
+
+    EPwm2Regs.AQCTLA.bit.CAU = AQ_CLEAR;
+    EPwm2Regs.AQCTLA.bit.CAD = AQ_SET;
+    EPwm2Regs.AQCTLB.bit.CAU = AQ_CLEAR;
+    EPwm2Regs.AQCTLB.bit.CAD = AQ_SET;
+
     //
     // Interrupt where we will change the Compare Values
     //
     EPwm1Regs.ETSEL.bit.INTSEL = ET_CTR_ZERO;     // Select INT on Zero event
     EPwm1Regs.ETSEL.bit.INTEN = 1;                // Enable INT
     EPwm1Regs.ETPS.bit.INTPRD = ET_1ST;           // Generate INT on 1st event
+
+    epwm_info.EPwm_CMPA_Direction = EPWM_CMP_UP;   // Start by increasing CMPA
+	epwm_info.EPwm_CMPB_Direction = EPWM_CMP_DOWN; // & decreasing CMPB
+	epwm_info.EPwmTimerIntCount = 0;               // Zero the interrupt counter
+	epwm_info.EPwmRegHandle = &EPwm1Regs;          // Set the pointer to the
+                                                        // ePWM module
+	epwm_info.EPwmMaxCMPA = EPWM_MAX_CMP;        // Setup min/max CMPA/CMPB
+                                                        // values
+	epwm_info.EPwmMinCMPA = EPWM_MIN_CMP;
+	epwm_info.EPwmMaxCMPB = EPWM_MAX_CMP;
+	epwm_info.EPwmMinCMPB = EPWM_MIN_CMP;
 }
 
 void InitSpi(void)
@@ -432,7 +465,7 @@ void InitSpi(void)
    //
    // Load the SPI FIFO Tx Buffer
    //
-   load_buffer();
+   //load_buffer();
 
    //
    // Disable the clock to prevent continuous transfer / DMA triggers
@@ -447,3 +480,31 @@ void InitSpi(void)
 //
 // End of file
 //
+
+/*void update_compare(EPWM_INFO *epwm_info)
+{
+	/*
+    //
+    // Every 10'th interrupt, change the CMPA/CMPB values
+    //
+    if(epwm_info->EPwmTimerIntCount == 10)
+    {
+        epwm_info->EPwmTimerIntCount = 0;
+        /*delTheta = ((0xFFFF)*40*3.1415927*frequency*EPWM_TIMER_TBPRD*(0.00000001));
+        theta = theta + delTheta;
+        reference = (int16)modIndex * cos((float)theta/65535);
+        compareValue = reference + EPWM_TIMER_TBPRD/2;
+        if(compareValue < EPWM_MIN_CMP)
+        	epwm_info->EPwmRegHandle->CMPA.bit.CMPA = EPWM_MIN_CMP;
+        else if(compareValue > EPWM_MAX_CMP)
+        	epwm_info->EPwmRegHandle->CMPA.bit.CMPA = EPWM_MAX_CMP;
+        else
+        	epwm_info->EPwmRegHandle->CMPA.bit.CMPA = compareValue;
+    }
+    else
+    {
+        epwm_info->EPwmTimerIntCount++;
+    }
+
+    return;
+}*/
