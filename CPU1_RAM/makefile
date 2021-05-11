@@ -24,7 +24,7 @@ ORDERED_OBJS += \
 "./F2837xD_usDelay.obj" \
 $(GEN_CMDS__FLAG) \
 -lrts2800_fpu32.lib \
--l2837xD_RAM_lnk_cpu1.cmd \
+-l2837xD_RAM_lnk_cpu1_my_version.cmd \
 -lF2837xD_Headers_nonBIOS_cpu1.cmd \
 -llibc.a \
 
@@ -149,10 +149,10 @@ BIN_OUTPUTS__QUOTED += \
 all: Neural_Network_CPU1.out
 
 # Tool invocations
-Neural_Network_CPU1.out: $(OBJS) $(GEN_CMDS)
+Neural_Network_CPU1.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: C2000 Linker'
-	"C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/bin/cl2000" -v28 -ml -mt --cla_support=cla1 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu2 --define=CPU1 -g --diag_suppress=1311 --diag_warning=225 --display_error_number --abi=coffabi -z -m"Neural_Network_CPU1.map" --stack_size=0x100 --warn_sections -i"C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/lib" -i"C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include" -i"C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/cmd" -i"C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/cmd" --reread_libs --display_error_number --xml_link_info="Neural_Network_CPU1_linkInfo.xml" --rom_model -o "Neural_Network_CPU1.out" $(ORDERED_OBJS)
+	"C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/bin/cl2000" -v28 -ml -mt --cla_support=cla1 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu2 --define=CPU1 -g --diag_suppress=1311 --diag_warning=225 --display_error_number --abi=coffabi -z -m"Neural_Network_CPU1.map" --stack_size=0x100 --warn_sections -i"C:/Users/Thomas LaJoie/workspace_v6_2/Neural_Network_CPU1" -i"C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include" -i"C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/lib" -i"C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/cmd" --priority --reread_libs --display_error_number --xml_link_info="Neural_Network_CPU1_linkInfo.xml" --rom_model -o "Neural_Network_CPU1.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
