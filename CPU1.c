@@ -246,9 +246,9 @@ void main(void)
     //ConfigureEPWM();
 
 //
-// Setup the ADC for ePWM triggered conversions on channels 0 and 2
+// Setup the ADC for ePWM triggered conversions on channels 0 and 1
 //
-    SetupADC(0, 2);
+    SetupADC(0, 0);
 
 //
 // Enable global Interrupts and higher priority real-time debug events:
@@ -305,6 +305,7 @@ void main(void)
 
         //TODO: Add SPI/DMA Code
         bufferFull = 0; //clear the buffer full flag
+        //asm("   ESTOP0");
 
     } while(1);
 }
@@ -420,8 +421,8 @@ __interrupt void epwm1_isr(void)
     else
     {
     	ADC_cycle_count = 0;
-    	AdcaRegs.ADCSOCFRC1.bit.SOC0 = 1;		//On certain number of PWM Cycles,
-    	AdcbRegs.ADCSOCFRC1.bit.SOC0 = 1;		//trigger SOC via software trigger
+    	AdcbRegs.ADCSOCFRC1.bit.SOC0 = 1;		//On certain number of PWM Cycles,
+    	AdcaRegs.ADCSOCFRC1.bit.SOC0 = 1;		//trigger SOC via software trigger
     }
 
     //
@@ -441,8 +442,8 @@ __interrupt void epwm1_isr(void)
 __interrupt void adca1_isr(void)
 {
 	//Only one interrupt should be necessary- don't need both ADCs to signal when done
-    AdcaResults[resultsIndex] = AdcaResultRegs.ADCRESULT0;
-    AdcbResults[resultsIndex++] = AdcbResultRegs.ADCRESULT0;
+    AdcbResults[resultsIndex] = AdcbResultRegs.ADCRESULT0;
+    AdcaResults[resultsIndex++] = AdcaResultRegs.ADCRESULT0;
 
     if(RESULTS_BUFFER_SIZE <= resultsIndex)
     {
