@@ -10,7 +10,7 @@ GEN_OPTS__FLAG :=
 GEN_CMDS__FLAG := 
 
 ORDERED_OBJS += \
-"./CPU1.obj" \
+"./CPU1_Experiment.obj" \
 "./F2837xD_Adc.obj" \
 "./F2837xD_CodeStartBranch.obj" \
 "./F2837xD_DefaultISR.obj" \
@@ -152,7 +152,7 @@ all: Neural_Network_CPU1.out
 Neural_Network_CPU1.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: C2000 Linker'
-	"C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/bin/cl2000" -v28 -ml -mt --cla_support=cla1 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu2 --define=CPU1 -g --diag_suppress=1311 --diag_warning=225 --display_error_number --abi=coffabi -z -m"Neural_Network_CPU1.map" --stack_size=0x100 --warn_sections -i"C:/Users/Thomas LaJoie/workspace_v6_2/Neural_Network_CPU1" -i"C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include" -i"C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/lib" -i"C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/cmd" --priority --reread_libs --display_error_number --xml_link_info="Neural_Network_CPU1_linkInfo.xml" --rom_model -o "Neural_Network_CPU1.out" $(ORDERED_OBJS)
+	"C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/bin/cl2000" -v28 -ml -mt --cla_support=cla1 --float_support=fpu32 --tmu_support=tmu0 --vcu_support=vcu2 --advice:performance=all --define=CPU1 -g --diag_suppress=1311 --diag_warning=225 --display_error_number --abi=coffabi -z -m"Neural_Network_CPU1.map" --stack_size=0x100 --warn_sections -i"C:/Users/Thomas LaJoie/workspace_v6_2/Neural_Network_CPU1" -i"C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include" -i"C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/lib" -i"C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/cmd" --priority --reread_libs --display_error_number --xml_link_info="Neural_Network_CPU1_linkInfo.xml" --rom_model -o "Neural_Network_CPU1.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -165,8 +165,8 @@ Neural_Network_CPU1.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(EXE_OUTPUTS__QUOTED)$(BIN_OUTPUTS__QUOTED)
-	-$(RM) "CPU1.d" "F2837xD_Adc.d" "F2837xD_DefaultISR.d" "F2837xD_EPwm.d" "F2837xD_GlobalVariableDefs.d" "F2837xD_Gpio.d" "F2837xD_Ipc.d" "F2837xD_PieCtrl.d" "F2837xD_PieVect.d" "F2837xD_SysCtrl.d" 
-	-$(RM) "CPU1.obj" "F2837xD_Adc.obj" "F2837xD_CodeStartBranch.obj" "F2837xD_DefaultISR.obj" "F2837xD_EPwm.obj" "F2837xD_GlobalVariableDefs.obj" "F2837xD_Gpio.obj" "F2837xD_Ipc.obj" "F2837xD_PieCtrl.obj" "F2837xD_PieVect.obj" "F2837xD_SysCtrl.obj" "F2837xD_usDelay.obj" 
+	-$(RM) "CPU1_Experiment.d" "F2837xD_Adc.d" "F2837xD_DefaultISR.d" "F2837xD_EPwm.d" "F2837xD_GlobalVariableDefs.d" "F2837xD_Gpio.d" "F2837xD_Ipc.d" "F2837xD_PieCtrl.d" "F2837xD_PieVect.d" "F2837xD_SysCtrl.d" 
+	-$(RM) "CPU1_Experiment.obj" "F2837xD_Adc.obj" "F2837xD_CodeStartBranch.obj" "F2837xD_DefaultISR.obj" "F2837xD_EPwm.obj" "F2837xD_GlobalVariableDefs.obj" "F2837xD_Gpio.obj" "F2837xD_Ipc.obj" "F2837xD_PieCtrl.obj" "F2837xD_PieVect.obj" "F2837xD_SysCtrl.obj" "F2837xD_usDelay.obj" 
 	-$(RM) "F2837xD_CodeStartBranch.d" "F2837xD_usDelay.d" 
 	-@echo 'Finished clean'
 	-@echo ' '
