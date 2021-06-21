@@ -180,8 +180,20 @@ void main(void)
     // For this case just init GPIO pins for ePWM1 and ePWM2
     // These functions are in the F2837xD_EPwm.c file
     //
-    InitEPwm1Gpio();
-    InitEPwm2Gpio();
+    //InitEPwm1Gpio();
+    //InitEPwm2Gpio();
+
+    GpioCtrlRegs.GPEPUD.bit.GPIO145 = 1;    // Disable pull-up on GPIO145 (EPWM1A)
+    GpioCtrlRegs.GPEPUD.bit.GPIO146 = 1;    // Disable pull-up on GPIO146 (EPWM1B)
+
+    GpioCtrlRegs.GPEMUX2.bit.GPIO145 = 1;   // Configure GPIO145 as EPWM1A
+    GpioCtrlRegs.GPEMUX2.bit.GPIO146 = 1;   // Configure GPIO0146 as EPWM1B
+
+    GpioCtrlRegs.GPEPUD.bit.GPIO147 = 1;    // Disable pull-up on GPIO147 (EPWM2A)
+    GpioCtrlRegs.GPEPUD.bit.GPIO148 = 1;    // Disable pull-up on GPIO148 (EPWM2B)
+
+    GpioCtrlRegs.GPEMUX2.bit.GPIO147 = 1;   // Configure GPIO147 as EPWM2A
+    GpioCtrlRegs.GPEMUX2.bit.GPIO148 = 1;   // Configure GPIO148 as EPWM2B
 
 //
 // Step 3. Clear all interrupts and initialize PIE vector table:
