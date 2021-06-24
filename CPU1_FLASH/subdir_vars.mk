@@ -8,7 +8,7 @@ C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/source/F2837xD_Cod
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/source/F2837xD_usDelay.asm 
 
 C_SRCS += \
-../CPU1.c \
+../CPU1_Experiment.c \
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/source/F2837xD_Adc.c \
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/source/F2837xD_DefaultISR.c \
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/source/F2837xD_EPwm.c \
@@ -20,7 +20,7 @@ C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/source/F2837xD_Pie
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/source/F2837xD_SysCtrl.c 
 
 OBJS += \
-./CPU1.obj \
+./CPU1_Experiment.obj \
 ./F2837xD_Adc.obj \
 ./F2837xD_CodeStartBranch.obj \
 ./F2837xD_DefaultISR.obj \
@@ -38,7 +38,7 @@ ASM_DEPS += \
 ./F2837xD_usDelay.d 
 
 C_DEPS += \
-./CPU1.d \
+./CPU1_Experiment.d \
 ./F2837xD_Adc.d \
 ./F2837xD_DefaultISR.d \
 ./F2837xD_EPwm.d \
@@ -50,7 +50,7 @@ C_DEPS += \
 ./F2837xD_SysCtrl.d 
 
 C_DEPS__QUOTED += \
-"CPU1.d" \
+"CPU1_Experiment.d" \
 "F2837xD_Adc.d" \
 "F2837xD_DefaultISR.d" \
 "F2837xD_EPwm.d" \
@@ -62,7 +62,7 @@ C_DEPS__QUOTED += \
 "F2837xD_SysCtrl.d" 
 
 OBJS__QUOTED += \
-"CPU1.obj" \
+"CPU1_Experiment.obj" \
 "F2837xD_Adc.obj" \
 "F2837xD_CodeStartBranch.obj" \
 "F2837xD_DefaultISR.obj" \
@@ -80,7 +80,7 @@ ASM_DEPS__QUOTED += \
 "F2837xD_usDelay.d" 
 
 C_SRCS__QUOTED += \
-"../CPU1.c" \
+"../CPU1_Experiment.c" \
 "C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/source/F2837xD_Adc.c" \
 "C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/source/F2837xD_DefaultISR.c" \
 "C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/source/F2837xD_EPwm.c" \

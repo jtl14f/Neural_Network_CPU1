@@ -183,6 +183,8 @@ void main(void)
     //InitEPwm1Gpio();
     //InitEPwm2Gpio();
 
+    EALLOW;
+
     GpioCtrlRegs.GPEPUD.bit.GPIO145 = 1;    // Disable pull-up on GPIO145 (EPWM1A)
     GpioCtrlRegs.GPEPUD.bit.GPIO146 = 1;    // Disable pull-up on GPIO146 (EPWM1B)
 
@@ -194,6 +196,8 @@ void main(void)
 
     GpioCtrlRegs.GPEMUX2.bit.GPIO147 = 1;   // Configure GPIO147 as EPWM2A
     GpioCtrlRegs.GPEMUX2.bit.GPIO148 = 1;   // Configure GPIO148 as EPWM2B
+
+    EDIS;
 
 //
 // Step 3. Clear all interrupts and initialize PIE vector table:
