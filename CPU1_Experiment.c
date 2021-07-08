@@ -174,7 +174,7 @@ void main(void)
     // enable PWM1 and PWM2
     //
     CpuSysRegs.PCLKCR2.bit.EPWM1=1;
-    CpuSysRegs.PCLKCR2.bit.EPWM2=1;
+    //CpuSysRegs.PCLKCR2.bit.EPWM2=1;
 
     //
     // For this case just init GPIO pins for ePWM1 and ePWM2
@@ -191,11 +191,11 @@ void main(void)
     GpioCtrlRegs.GPEMUX2.bit.GPIO145 = 1;   // Configure GPIO145 as EPWM1A
     GpioCtrlRegs.GPEMUX2.bit.GPIO146 = 1;   // Configure GPIO0146 as EPWM1B
 
-    GpioCtrlRegs.GPEPUD.bit.GPIO147 = 1;    // Disable pull-up on GPIO147 (EPWM2A)
-    GpioCtrlRegs.GPEPUD.bit.GPIO148 = 1;    // Disable pull-up on GPIO148 (EPWM2B)
+    //GpioCtrlRegs.GPEPUD.bit.GPIO147 = 1;    // Disable pull-up on GPIO147 (EPWM2A)
+    //GpioCtrlRegs.GPEPUD.bit.GPIO148 = 1;    // Disable pull-up on GPIO148 (EPWM2B)
 
-    GpioCtrlRegs.GPEMUX2.bit.GPIO147 = 1;   // Configure GPIO147 as EPWM2A
-    GpioCtrlRegs.GPEMUX2.bit.GPIO148 = 1;   // Configure GPIO148 as EPWM2B
+    //GpioCtrlRegs.GPEMUX2.bit.GPIO147 = 1;   // Configure GPIO147 as EPWM2A
+    //GpioCtrlRegs.GPEMUX2.bit.GPIO148 = 1;   // Configure GPIO148 as EPWM2B
 
     EDIS;
 
@@ -418,7 +418,7 @@ __interrupt void epwm1_isr(void)
 	sin_theta = Sin_tab[EPWM_cycle_count];
 	reference = (Uint16)(((float)EPWM_TIMER_TBPRD * (0.5 + (modIndex * sin_theta / 2.0))));
 	EPwm1Regs.CMPA.bit.CMPA = reference;
-	EPwm2Regs.CMPA.bit.CMPA = reference;
+	//EPwm2Regs.CMPA.bit.CMPA = reference;
 	/*delTheta = ((0xFFFF)*4*3.1415927*frequency*EPWM_TIMER_TBPRD*(0.00000001));
 	theta = theta + delTheta;
 	reference = modIndex * sin((float)theta/65535);
@@ -480,18 +480,18 @@ void InitEPwm()
     EPwm1Regs.TBPHS.bit.TBPHS = 0x0000;        // Phase is 0
     EPwm1Regs.TBCTR = 0x0000;                  // Clear counter
 
-    EPwm2Regs.TBPRD = EPWM_TIMER_TBPRD;
-    EPwm2Regs.TBPHS.bit.TBPHS = 0x0000;        // Phase is 0
-    EPwm2Regs.TBCTR = 0x0000;                  // Clear counter
+    //EPwm2Regs.TBPRD = EPWM_TIMER_TBPRD;
+    //EPwm2Regs.TBPHS.bit.TBPHS = 0x0000;        // Phase is 0
+    //EPwm2Regs.TBCTR = 0x0000;                  // Clear counter
 
     //
     // Set Compare values
     //
-    EPwm1Regs.CMPA.bit.CMPA = 500;//EPWM_MIN_CMP;    // Set compare A value
+    EPwm1Regs.CMPA.bit.CMPA = 500;  // Set compare A value
     EPwm1Regs.CMPB.bit.CMPB = 0;    // Set Compare B value
 
-    EPwm2Regs.CMPA.bit.CMPA = 500;    // Set compare A value
-    EPwm2Regs.CMPB.bit.CMPB = 0;    // Set Compare B value
+    //EPwm2Regs.CMPA.bit.CMPA = 500;    // Set compare A value
+    //EPwm2Regs.CMPB.bit.CMPB = 0;    // Set Compare B value
 
     //
     // Setup counter mode
@@ -502,11 +502,11 @@ void InitEPwm()
     EPwm1Regs.TBCTL.bit.CLKDIV = TB_DIV1;
     EPwm1Regs.TBCTL.bit.SYNCOSEL = TB_SYNC_IN;
 
-    EPwm2Regs.TBCTL.bit.CTRMODE = TB_COUNT_UPDOWN; // Count up and down
-	EPwm2Regs.TBCTL.bit.PHSEN = TB_ENABLE;
-	EPwm2Regs.TBCTL.bit.HSPCLKDIV = TB_DIV1;       // Clock ratio to SYSCLKOUT
-	EPwm2Regs.TBCTL.bit.CLKDIV = TB_DIV1;
-	EPwm2Regs.TBCTL.bit.SYNCOSEL = TB_SYNC_IN;
+    //EPwm2Regs.TBCTL.bit.CTRMODE = TB_COUNT_UPDOWN; // Count up and down
+	//EPwm2Regs.TBCTL.bit.PHSEN = TB_ENABLE;
+	//EPwm2Regs.TBCTL.bit.HSPCLKDIV = TB_DIV1;       // Clock ratio to SYSCLKOUT
+	//EPwm2Regs.TBCTL.bit.CLKDIV = TB_DIV1;
+	//EPwm2Regs.TBCTL.bit.SYNCOSEL = TB_SYNC_IN;
 
     //
     // Setup shadowing
@@ -516,32 +516,43 @@ void InitEPwm()
     EPwm1Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO; // Load on Zero
     EPwm1Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO;
 
-    EPwm2Regs.CMPCTL.bit.SHDWAMODE = CC_SHADOW;
-    EPwm2Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW;
-    EPwm2Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO; // Load on Zero
-    EPwm2Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO;
+    //EPwm2Regs.CMPCTL.bit.SHDWAMODE = CC_SHADOW;
+    //EPwm2Regs.CMPCTL.bit.SHDWBMODE = CC_SHADOW;
+    //EPwm2Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO; // Load on Zero
+    //EPwm2Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO;
 
     //Setup Deadband - 300 ns
     EPwm1Regs.DBCTL.bit.OUT_MODE = DB_FULL_ENABLE;
     EPwm1Regs.DBCTL.bit.POLSEL = DB_ACTV_HI;
     EPwm1Regs.DBRED.bit.DBRED = 30;				//Corresponds to 300 ns
 
-    EPwm2Regs.DBCTL.bit.OUT_MODE = DB_FULL_ENABLE;
-    EPwm2Regs.DBCTL.bit.POLSEL = DB_ACTV_HI;
-    EPwm2Regs.DBRED.bit.DBRED = 30;				//Corresponds to 300 ns
+    //EPwm2Regs.DBCTL.bit.OUT_MODE = DB_FULL_ENABLE;
+    //EPwm2Regs.DBCTL.bit.POLSEL = DB_ACTV_HI;
+    //EPwm2Regs.DBRED.bit.DBRED = 30;				//Corresponds to 300 ns
 
     //
     // Set actions
     //
-    EPwm1Regs.AQCTLA.bit.CAU = AQ_CLEAR;		// Clear PWM1A on event A, up count
+
+    EPwm1Regs.AQCTLA.bit.CAU = AQ_SET;		// Clear PWM1A on event A, up count
+    EPwm1Regs.AQCTLA.bit.CAD = AQ_CLEAR;          //Set PWM1A on event A, down count
+    EPwm1Regs.AQCTLB.bit.CAU = AQ_CLEAR;
+    EPwm1Regs.AQCTLB.bit.CAD = AQ_SET;
+
+    //EPwm2Regs.AQCTLA.bit.CAU = AQ_CLEAR;		//Set PWM1A on event A, up count
+    //EPwm2Regs.AQCTLA.bit.CAD = AQ_SET;	//Clear PWM1A on event A, down count
+    //EPwm2Regs.AQCTLB.bit.CAU = AQ_SET;
+    //EPwm2Regs.AQCTLB.bit.CAD = AQ_CLEAR;
+
+    /*EPwm1Regs.AQCTLA.bit.CAU = AQ_CLEAR;		// Clear PWM1A on event A, up count
     EPwm1Regs.AQCTLA.bit.CAD = AQ_SET;          //Set PWM1A on event A, down count
-    //EPwm1Regs.AQCTLB.bit.CAU = AQ_CLEAR;
-    //EPwm1Regs.AQCTLB.bit.CAD = AQ_SET;
+    EPwm1Regs.AQCTLB.bit.CAU = AQ_SET;
+    EPwm1Regs.AQCTLB.bit.CAD = AQ_CLEAR;
 
     EPwm2Regs.AQCTLA.bit.CAU = AQ_SET;		//Set PWM1A on event A, up count
     EPwm2Regs.AQCTLA.bit.CAD = AQ_CLEAR;	//Clear PWM1A on event A, down count
-    //EPwm2Regs.AQCTLB.bit.CAU = AQ_SET;
-    //EPwm2Regs.AQCTLB.bit.CAD = AQ_CLEAR;
+    EPwm2Regs.AQCTLB.bit.CAU = AQ_CLEAR;
+    EPwm2Regs.AQCTLB.bit.CAD = AQ_SET;*/
 
     /*EPwm1Regs.AQCTLA.bit.CAU = AQ_SET;
     EPwm1Regs.AQCTLA.bit.CAD = AQ_CLEAR;

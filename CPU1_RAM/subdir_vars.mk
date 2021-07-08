@@ -80,7 +80,6 @@ ASM_DEPS__QUOTED += \
 "F2837xD_usDelay.d" 
 
 C_SRCS__QUOTED += \
-"../CPU1_Experiment.c" \
 "C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/source/F2837xD_Adc.c" \
 "C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/source/F2837xD_DefaultISR.c" \
 "C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/source/F2837xD_EPwm.c" \

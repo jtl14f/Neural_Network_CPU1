@@ -98,6 +98,21 @@
 							<inputType id="com.ti.ccstudio.buildDefinitions.C2000_20.12.compiler.inputType__ASM2_SRCS.252135139" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.C2000_20.12.compiler.inputType__ASM2_SRCS"/>
 						</tool>
 					</fileInfo>
+					<fileInfo id="com.ti.ccstudio.buildDefinitions.C2000.Debug.2121059750.1473205679" name="CPU1_Experiment.c" rcbsApplicability="disable" resourcePath="CPU1_Experiment.c" toolsToInvoke="com.ti.ccstudio.buildDefinitions.C2000_20.12.exe.compilerDebug.469289521.2116357115">
+						<tool id="com.ti.ccstudio.buildDefinitions.C2000_20.12.exe.compilerDebug.469289521.2116357115" name="C2000 Compiler" superClass="com.ti.ccstudio.buildDefinitions.C2000_20.12.exe.compilerDebug.469289521">
+							<option id="com.ti.ccstudio.buildDefinitions.C2000_20.12.compilerID.FP_MODE.1065317646" superClass="com.ti.ccstudio.buildDefinitions.C2000_20.12.compilerID.FP_MODE" value="com.ti.ccstudio.buildDefinitions.C2000_20.12.compilerID.FP_MODE.relaxed" valueType="enumerated"/>
+							<inputType id="com.ti.ccstudio.buildDefinitions.C2000_20.12.compiler.inputType__C_SRCS.2072411117" name="C Sources" superClass="com.ti.ccstudio.buildDefinitions.C2000_20.12.compiler.inputType__C_SRCS"/>
+							<inputType id="com.ti.ccstudio.buildDefinitions.C2000_20.12.compiler.inputType__CPP_SRCS.1924100272" name="C++ Sources" superClass="com.ti.ccstudio.buildDefinitions.C2000_20.12.compiler.inputType__CPP_SRCS"/>
+							<inputType id="com.ti.ccstudio.buildDefinitions.C2000_20.12.compiler.inputType__ASM_SRCS.1774697498" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.C2000_20.12.compiler.inputType__ASM_SRCS"/>
+							<inputType id="com.ti.ccstudio.buildDefinitions.C2000_20.12.compiler.inputType__ASM2_SRCS.910433837" name="Assembly Sources" superClass="com.ti.ccstudio.buildDefinitions.C2000_20.12.compiler.inputType__ASM2_SRCS"/>
+						</tool>
+						<tool customBuildStep="true" id="org.eclipse.cdt.managedbuilder.ui.rcbs.2133338617" name="Resource Custom Build Step">
+							<inputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.inputtype.1962611741" name="Resource Custom Build Step Input Type">
+								<additionalInput kind="additionalinputdependency" paths=""/>
+							</inputType>
+							<outputType id="org.eclipse.cdt.managedbuilder.ui.rcbs.outputtype.1915389079" name="Resource Custom Build Step Output Type"/>
+						</tool>
+					</fileInfo>
 					<sourceEntries>
 						<entry excluding="CPU1_Debugging.c|2837x_FLASH_lnk_cpu1.cmd|2837xD_RAM_lnk_cpu1_my_version.cmd" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
@@ -206,7 +221,6 @@
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="adc_soc_epwm_dc_cpu01.com.ti.ccstudio.buildDefinitions.C2000.ProjectType.253935156" name="C2000" projectType="com.ti.ccstudio.buildDefinitions.C2000.ProjectType"/>
 	</storageModule>
-	<storageModule moduleId="scannerConfiguration"/>
 	<storageModule moduleId="org.eclipse.cdt.core.language.mapping">
 		<project-mappings>
 			<content-type-mapping configuration="" content-type="org.eclipse.cdt.core.asmSource" language="com.ti.ccstudio.core.TIASMLanguage"/>
@@ -218,4 +232,5 @@
 	</storageModule>
 	<storageModule moduleId="null.endianPreference"/>
 	<storageModule moduleId="cpuFamily"/>
+	<storageModule moduleId="scannerConfiguration"/>
 </cproject>
