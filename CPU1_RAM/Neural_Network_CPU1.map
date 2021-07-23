@@ -1,7 +1,7 @@
 ******************************************************************************
              TMS320C2000 Linker PC v20.12.0                    
 ******************************************************************************
->> Linked Thu Jul  8 15:23:52 2021
+>> Linked Fri Jul 23 15:17:45 2021
 
 OUTPUT FILE NAME:   <Neural_Network_CPU1.out>
 ENTRY POINT SYMBOL: "_c_int00"  address: 00000384
@@ -14,12 +14,12 @@ MEMORY CONFIGURATION
 PAGE 0:
   BEGIN                 00000000   00000002  00000002  00000000  RWIX
   RAMM0                 00000122   000002de  000002de  00000000  RWIX
-  RAMLS0                00008000   00000800  0000045e  000003a2  RWIX
+  RAMLS0                00008000   00000800  00000469  00000397  RWIX
   RAMLS1                00008800   00000800  00000000  00000800  RWIX
   RAMLS2                00009000   00000800  00000000  00000800  RWIX
   RAMLS3                00009800   00000800  00000000  00000800  RWIX
   RAMLS4                0000a000   00000800  00000000  00000800  RWIX
-  RAMD0                 0000b000   00000800  000007fd  00000003  RWIX
+  RAMD0                 0000b000   00000800  000007fe  00000002  RWIX
   RESET                 003fffc0   00000002  00000000  00000002  RWIX
 
 PAGE 1:
@@ -599,23 +599,23 @@ CpuSysRegsFile
                   00000384    00000056     rts2800_fpu32.lib : boot28.asm.obj (.text)
                   000003da    00000026     F2837xD_PieVect.obj (.text)
 
-.text.2    0    00008000    0000045e     
+.text.2    0    00008000    00000469     
                   00008000    0000033b     F2837xD_SysCtrl.obj (.text)
                   0000833b    000000a4     CPU1_Experiment.obj (.text:retain)
                   000083df    00000028     F2837xD_PieCtrl.obj (.text)
                   00008407    00000024     rts2800_fpu32.lib : cpy_tbl.c.obj (.text)
-                  0000842b    00000018                       : ll_aox28.asm.obj (.text)
-                  00008443    00000012                       : args_main.c.obj (.text)
-                  00008455    00000009                       : _lock.c.obj (.text)
+                  0000842b    0000001d                       : memcpy.c.obj (.text)
+                  00008448    00000018                       : ll_aox28.asm.obj (.text)
+                  00008460    00000009                       : _lock.c.obj (.text)
 
-.text.3    0    0000b000    000007fd     
+.text.3    0    0000b000    000007fe     
                   0000b000    00000585     F2837xD_DefaultISR.obj (.text:retain)
-                  0000b585    0000013e     CPU1_Experiment.obj (.text)
-                  0000b6c3    000000f1     F2837xD_Adc.obj (.text)
-                  0000b7b4    00000029     rts2800_fpu32.lib : exit.c.obj (.text)
-                  0000b7dd    0000001d                       : memcpy.c.obj (.text)
-                  0000b7fa    00000002                       : pre_init.c.obj (.text)
-                  0000b7fc    00000001                       : startup.c.obj (.text)
+                  0000b585    0000014a     CPU1_Experiment.obj (.text)
+                  0000b6cf    000000f1     F2837xD_Adc.obj (.text)
+                  0000b7c0    00000029     rts2800_fpu32.lib : exit.c.obj (.text)
+                  0000b7e9    00000012                       : args_main.c.obj (.text)
+                  0000b7fb    00000002                       : pre_init.c.obj (.text)
+                  0000b7fd    00000001                       : startup.c.obj (.text)
 
 .econst.1 
 *          1    0000a8e4    00000682     
@@ -631,7 +631,7 @@ MODULE SUMMARY
        ------                           ----   ----------------   ------------------
     .\
        F2837xD_GlobalVariableDefs.obj   0      0                  8759              
-       CPU1_Experiment.obj              482    1666               210               
+       CPU1_Experiment.obj              494    1666               210               
        F2837xD_DefaultISR.obj           1413   0                  0                 
        F2837xD_SysCtrl.obj              827    0                  0                 
        F2837xD_Gpio.obj                 580    0                  0                 
@@ -641,7 +641,7 @@ MODULE SUMMARY
        F2837xD_usDelay.obj              4      0                  0                 
        F2837xD_CodeStartBranch.obj      2      0                  0                 
     +--+--------------------------------+------+------------------+--------------------+
-       Total:                           3627   2114               8969              
+       Total:                           3639   2114               8969              
                                                                                     
     C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/lib/rts2800_fpu32.lib
        boot28.asm.obj                   86     0                  0                 
@@ -658,7 +658,7 @@ MODULE SUMMARY
                                                                                     
        Stack:                           0      0                  256               
     +--+--------------------------------+------+------------------+--------------------+
-       Grand Total:                     3873   2138               9235              
+       Grand Total:                     3885   2138               9235              
 
 
 GLOBAL DATA SYMBOLS: SORTED BY DATA PAGE
@@ -866,10 +866,10 @@ GLOBAL SYMBOLS: SORTED ALPHABETICALLY BY Name
 page  address   name                                  
 ----  -------   ----                                  
 abs   ffffffff  .text                                 
-0     0000b7b4  C$$EXIT                               
-0     0000842b  LL$$AND                               
-0     00008433  LL$$OR                                
-0     0000843b  LL$$XOR                               
+0     0000b7c0  C$$EXIT                               
+0     00008448  LL$$AND                               
+0     00008450  LL$$OR                                
+0     00008458  LL$$XOR                               
 0     0000b0be  _ADCA1_ISR                            
 0     0000b33e  _ADCA2_ISR                            
 0     0000b348  _ADCA3_ISR                            
@@ -893,7 +893,7 @@ abs   ffffffff  .text
 1     0000a868  _ADC_cycle_count                      
 0     0000b546  _AUX_PLL_SLIP_ISR                     
 1     0005f4c0  _AccessProtectionRegs                 
-0     0000b6c3  _AdcSetMode                           
+0     0000b6cf  _AdcSetMode                           
 1     00007400  _AdcaRegs                             
 1     00000b00  _AdcaResultRegs                       
 1     0000a800  _AdcaResults                          
@@ -922,7 +922,7 @@ abs   ffffffff  .text
 0     0000b3ca  _CLA1_8_ISR                           
 0     0000b550  _CLA_OVERFLOW_ISR                     
 0     0000b55a  _CLA_UNDERFLOW_ISR                    
-0     0000b77a  _CalAdcINL                            
+0     0000b786  _CalAdcINL                            
 1     00048000  _CanaRegs                             
 1     0004a000  _CanbRegs                             
 1     00001400  _Cla1Regs                             
@@ -1070,7 +1070,7 @@ abs   ffffffff  .text
 0     00008031  _InitPeripheralClocks                 
 0     000083df  _InitPieCtrl                          
 0     000003da  _InitPieVectTable                     
-0     0000b6a9  _InitSpi                              
+0     0000b6b5  _InitSpi                              
 0     00008000  _InitSysCtrl                          
 0     00008102  _InitSysPll                           
 1     00007900  _InputXbarRegs                        
@@ -1174,24 +1174,24 @@ abs   ffffffff  ___c_args__
 abs   ffffffff  ___etext__                            
 abs   ffffffff  ___pinit__                            
 abs   ffffffff  ___text__                             
-0     00008443  __args_main                           
+0     0000b7e9  __args_main                           
 1     0000a874  __lock                                
-0     0000845d  __nop                                 
-0     00008459  __register_lock                       
-0     00008455  __register_unlock                     
+0     00008468  __nop                                 
+0     00008464  __register_lock                       
+0     00008460  __register_unlock                     
 1     00000400  __stack                               
-0     0000b7fc  __system_post_cinit                   
-0     0000b7fa  __system_pre_init                     
+0     0000b7fd  __system_post_cinit                   
+0     0000b7fb  __system_pre_init                     
 1     0000a876  __unlock                              
-0     0000b7b4  _abort                                
+0     0000b7c0  _abort                                
 0     000083a9  _adca1_isr                            
 1     0000a865  _bufferFull                           
 0     00000384  _c_int00                              
 0     00008407  _copy_in                              
 0     0000833b  _epwm1_isr                            
-0     0000b7b6  _exit                                 
+0     0000b7c2  _exit                                 
 0     0000b585  _main                                 
-0     0000b7dd  _memcpy                               
+0     0000842b  _memcpy                               
 1     0000a86c  _modIndex                             
 1     0000a867  _reference                            
 1     0000a864  _resultsIndex                         
@@ -1253,13 +1253,13 @@ page  address   name
 0     000083df  _InitPieCtrl                          
 0     000083fe  _EnableInterrupts                     
 0     00008407  _copy_in                              
-0     0000842b  LL$$AND                               
-0     00008433  LL$$OR                                
-0     0000843b  LL$$XOR                               
-0     00008443  __args_main                           
-0     00008455  __register_unlock                     
-0     00008459  __register_lock                       
-0     0000845d  __nop                                 
+0     0000842b  _memcpy                               
+0     00008448  LL$$AND                               
+0     00008450  LL$$OR                                
+0     00008458  LL$$XOR                               
+0     00008460  __register_unlock                     
+0     00008464  __register_lock                       
+0     00008468  __nop                                 
 0     0000b000  _TIMER1_ISR                           
 0     0000b00a  _TIMER2_ISR                           
 0     0000b014  _DATALOG_ISR                          
@@ -1405,15 +1405,15 @@ page  address   name
 0     0000b5f2  _ConfigureADC                         
 0     0000b622  _SetupADC                             
 0     0000b65f  _InitEPwm                             
-0     0000b6a9  _InitSpi                              
-0     0000b6c3  _AdcSetMode                           
-0     0000b77a  _CalAdcINL                            
-0     0000b7b4  C$$EXIT                               
-0     0000b7b4  _abort                                
-0     0000b7b6  _exit                                 
-0     0000b7dd  _memcpy                               
-0     0000b7fa  __system_pre_init                     
-0     0000b7fc  __system_post_cinit                   
+0     0000b6b5  _InitSpi                              
+0     0000b6cf  _AdcSetMode                           
+0     0000b786  _CalAdcINL                            
+0     0000b7c0  C$$EXIT                               
+0     0000b7c0  _abort                                
+0     0000b7c2  _exit                                 
+0     0000b7e9  __args_main                           
+0     0000b7fb  __system_pre_init                     
+0     0000b7fd  __system_post_cinit                   
 1     00000400  __stack                               
 1     00000500  __STACK_END                           
 1     00000b00  _AdcaResultRegs                       

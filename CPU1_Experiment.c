@@ -262,9 +262,9 @@ void main(void)
     //ConfigureEPWM();
 
 //
-// Setup the ADC for ePWM triggered conversions on channels 0 and 1
+// Setup the ADC for ePWM triggered conversions on channels
 //
-    SetupADC(0, 0);
+    SetupADC(1, 4);
 
 //
 // Enable global Interrupts and higher priority real-time debug events:
@@ -338,10 +338,10 @@ void ConfigureADC(void)
     //write configurations
     //
     AdcaRegs.ADCCTL2.bit.PRESCALE = 6; //set ADCCLK divider to /4
-    AdcSetMode(ADC_ADCA, ADC_RESOLUTION_16BIT, ADC_SIGNALMODE_DIFFERENTIAL);
+    AdcSetMode(ADC_ADCA, ADC_RESOLUTION_12BIT, ADC_SIGNALMODE_SINGLE);
 
     AdcbRegs.ADCCTL2.bit.PRESCALE = 6; //set ADCCLK divider to /4
-	AdcSetMode(ADC_ADCB, ADC_RESOLUTION_16BIT, ADC_SIGNALMODE_DIFFERENTIAL);
+	AdcSetMode(ADC_ADCB, ADC_RESOLUTION_12BIT, ADC_SIGNALMODE_SINGLE);
 
     //
     //Set pulse positions to late
@@ -418,6 +418,8 @@ __interrupt void epwm1_isr(void)
 	sin_theta = Sin_tab[EPWM_cycle_count];
 	reference = (Uint16)(((float)EPWM_TIMER_TBPRD * (0.5 + (modIndex * sin_theta / 2.0))));
 	EPwm1Regs.CMPA.bit.CMPA = reference;
+	//EPwm2Regs.CMPA.bit.CMPA = reference;
+	//EPwm1Regs.CMPB.bit.CMPB = reference;
 	//EPwm2Regs.CMPA.bit.CMPA = reference;
 	/*delTheta = ((0xFFFF)*4*3.1415927*frequency*EPWM_TIMER_TBPRD*(0.00000001));
 	theta = theta + delTheta;
@@ -521,28 +523,19 @@ void InitEPwm()
     //EPwm2Regs.CMPCTL.bit.LOADAMODE = CC_CTR_ZERO; // Load on Zero
     //EPwm2Regs.CMPCTL.bit.LOADBMODE = CC_CTR_ZERO;
 
-    //Setup Deadband - 300 ns
-    EPwm1Regs.DBCTL.bit.OUT_MODE = DB_FULL_ENABLE;
-    EPwm1Regs.DBCTL.bit.POLSEL = DB_ACTV_HI;
-    EPwm1Regs.DBRED.bit.DBRED = 30;				//Corresponds to 300 ns
-
-    //EPwm2Regs.DBCTL.bit.OUT_MODE = DB_FULL_ENABLE;
-    //EPwm2Regs.DBCTL.bit.POLSEL = DB_ACTV_HI;
-    //EPwm2Regs.DBRED.bit.DBRED = 30;				//Corresponds to 300 ns
-
     //
     // Set actions
     //
 
-    EPwm1Regs.AQCTLA.bit.CAU = AQ_SET;		// Clear PWM1A on event A, up count
-    EPwm1Regs.AQCTLA.bit.CAD = AQ_CLEAR;          //Set PWM1A on event A, down count
-    EPwm1Regs.AQCTLB.bit.CAU = AQ_CLEAR;
-    EPwm1Regs.AQCTLB.bit.CAD = AQ_SET;
+    EPwm1Regs.AQCTLA.bit.CAU = AQ_CLEAR;
+    EPwm1Regs.AQCTLA.bit.CAD = AQ_SET;
+    EPwm1Regs.AQCTLB.bit.CAU = AQ_SET;
+    EPwm1Regs.AQCTLB.bit.CAD = AQ_CLEAR;
 
-    //EPwm2Regs.AQCTLA.bit.CAU = AQ_CLEAR;		//Set PWM1A on event A, up count
-    //EPwm2Regs.AQCTLA.bit.CAD = AQ_SET;	//Clear PWM1A on event A, down count
-    //EPwm2Regs.AQCTLB.bit.CAU = AQ_SET;
-    //EPwm2Regs.AQCTLB.bit.CAD = AQ_CLEAR;
+    //EPwm2Regs.AQCTLA.bit.CAU = AQ_SET;		//Set PWM1A on event A, up count
+    //EPwm2Regs.AQCTLA.bit.CAD = AQ_CLEAR;	//Clear PWM1A on event A, down count
+    //EPwm2Regs.AQCTLB.bit.CAU = AQ_CLEAR;
+    //EPwm2Regs.AQCTLB.bit.CAD = AQ_SET;
 
     /*EPwm1Regs.AQCTLA.bit.CAU = AQ_CLEAR;		// Clear PWM1A on event A, up count
     EPwm1Regs.AQCTLA.bit.CAD = AQ_SET;          //Set PWM1A on event A, down count
@@ -563,6 +556,18 @@ void InitEPwm()
     EPwm2Regs.AQCTLA.bit.CAD = AQ_SET;
     EPwm2Regs.AQCTLB.bit.CAU = AQ_CLEAR;
     EPwm2Regs.AQCTLB.bit.CAD = AQ_SET;*/
+
+    //Setup Deadband - 300 ns
+    EPwm1Regs.DBCTL.bit.OUT_MODE = DB_FULL_ENABLE;
+    EPwm1Regs.DBCTL.bit.POLSEL = DB_ACTV_HIC;
+    EPwm1Regs.DBCTL.bit.IN_MODE = DBA_ALL;
+    EPwm1Regs.DBRED.bit.DBRED = 30;				//Corresponds to 300 ns
+    EPwm1Regs.DBFED.bit.DBFED = 30;
+
+    //EPwm2Regs.DBCTL.bit.OUT_MODE = DB_FULL_ENABLE;
+    //EPwm2Regs.DBCTL.bit.POLSEL = DB_ACTV_LO;
+    //EPwm1Regs.DBCTL.bit.IN_MODE = DBA_ALL;
+    //EPwm2Regs.DBRED.bit.DBRED = 30;				//Corresponds to 300 ns
 
     //
     // Interrupt where we will change the Compare Values

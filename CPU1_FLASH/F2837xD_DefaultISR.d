@@ -2,12 +2,20 @@
 
 F2837xD_DefaultISR.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/source/F2837xD_DefaultISR.c
 F2837xD_DefaultISR.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_device.h
-F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/c2000_15.12.3.LTS/include/assert.h
-F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/c2000_15.12.3.LTS/include/linkage.h
-F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/c2000_15.12.3.LTS/include/stdarg.h
-F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/c2000_15.12.3.LTS/include/stdbool.h
-F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/c2000_15.12.3.LTS/include/stddef.h
-F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/c2000_15.12.3.LTS/include/stdint.h
+F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/assert.h
+F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/_ti_config.h
+F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/linkage.h
+F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/stdarg.h
+F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/sys/_types.h
+F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/sys/cdefs.h
+F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/machine/_types.h
+F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/stdbool.h
+F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/stddef.h
+F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/stdint.h
+F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/_stdint40.h
+F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/sys/stdint.h
+F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/machine/_stdint.h
+F2837xD_DefaultISR.obj: C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/sys/_stdint.h
 F2837xD_DefaultISR.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_adc.h
 F2837xD_DefaultISR.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_analogsubsys.h
 F2837xD_DefaultISR.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_cla.h
@@ -39,6 +47,7 @@ F2837xD_DefaultISR.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_h
 F2837xD_DefaultISR.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_upp.h
 F2837xD_DefaultISR.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_xbar.h
 F2837xD_DefaultISR.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_xint.h
+F2837xD_DefaultISR.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_can.h
 F2837xD_DefaultISR.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/F2837xD_Examples.h
 F2837xD_DefaultISR.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/F2837xD_GlobalPrototypes.h
 F2837xD_DefaultISR.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/F2837xD_cputimervars.h
@@ -57,12 +66,20 @@ F2837xD_DefaultISR.obj: C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_c
 
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/source/F2837xD_DefaultISR.c: 
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_device.h: 
-C:/ti/ccsv6/tools/compiler/c2000_15.12.3.LTS/include/assert.h: 
-C:/ti/ccsv6/tools/compiler/c2000_15.12.3.LTS/include/linkage.h: 
-C:/ti/ccsv6/tools/compiler/c2000_15.12.3.LTS/include/stdarg.h: 
-C:/ti/ccsv6/tools/compiler/c2000_15.12.3.LTS/include/stdbool.h: 
-C:/ti/ccsv6/tools/compiler/c2000_15.12.3.LTS/include/stddef.h: 
-C:/ti/ccsv6/tools/compiler/c2000_15.12.3.LTS/include/stdint.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/assert.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/_ti_config.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/linkage.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/stdarg.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/sys/_types.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/sys/cdefs.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/machine/_types.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/stdbool.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/stddef.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/stdint.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/_stdint40.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/sys/stdint.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/machine/_stdint.h: 
+C:/ti/ccsv6/tools/compiler/ti-cgt-c2000_20.12.0.STS/include/sys/_stdint.h: 
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_adc.h: 
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_analogsubsys.h: 
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_cla.h: 
@@ -94,6 +111,7 @@ C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_s
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_upp.h: 
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_xbar.h: 
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_xint.h: 
+C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_headers/include/F2837xD_can.h: 
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/F2837xD_Examples.h: 
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/F2837xD_GlobalPrototypes.h: 
 C:/ti/controlSUITE/device_support/F2837xD/v210/F2837xD_common/include/F2837xD_cputimervars.h: 
